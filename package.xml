@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<package format="2">
+  <name>dwm1001_driver</name>
+  <version>1.0.0</version>
+  <description>Simple ros-driver for the DWM1001 UWB module.</description>
+
+  <author email="marco.karrer@mavt.ethz.ch">Marco Karrer</author>
+
+  <maintainer email="marco.karrer@mavt.ethz.ch">Marco Karrer</maintainer>
+
+  <license>BSD</license>
+
+  <buildtool_depend>catkin</buildtool_depend>
+  <buildtool_depend>catkin_simple</buildtool_depend>
+
+  <depend>rospy</depend>
+  <depend>std_msgs</depend>
+  <depend>sensor_msgs</depend>
+
+</package>
