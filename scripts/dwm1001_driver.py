@@ -13,14 +13,12 @@ from message_filters import ApproximateTimeSynchronizer, Subscriber
 
 class MainClass(object):
     def __init__(self):
-        self.scale_factor_ = {}
-        self.offset_ = {}
+        self.scale_factor_ = 1.0
+        self.offset_ = 0.0
         self.serial_port_ = "/dev/ttyS1"
-        self.baud_rate_ = 115200
-        self.this_id_ = 0
-        #self.topic_name_ = "uwb_distance"
-        self.uid_mapping_ = {}
-        self.publishers_ = {}
+        self.baud_rate_ = 460800
+        self.topic_name_ = "uwb_distance"
+       # self.publisher_ = rospy.Publisher();
     def read_parameters(self):
         # Read in the parameters from ros
         scale_factor = rospy.get_param("~scale_factor")
@@ -29,18 +27,8 @@ class MainClass(object):
         self.baud_rate_ = rospy.get_param('~baud_rate', self.baud_rate_)
         topic_name = "uwb_distance"
         topic_name = rospy.get_param('~topic_name', topic_name)
-        self.this_id_ = rospy.get_param('~this_id', self.this_id_)
-        uids = rospy.get_param("~uids")
-        uids_mapping = rospy.get_param("~uids_mapping")
-        if (len(uids) != len(uids_mapping)) : print('Mappings are not correct')
         print(scale_factor)
-        for i in range(len(uids)) :
-            self.scale_factor_[uids[i]] = scale_factor[i]
-            self.offset_[uids[i]] = offset[i]
-            self.uid_mapping_[uids[i]] = uids_mapping[i]
-            tmp_topic_name = '/%s_%d_%d' %(topic_name, self.this_id_, uids_mapping[i])
-            self.publishers_[uids[i]] = rospy.Publisher(tmp_topic_name, Range, queue_size=10)
-            print(tmp_topic_name)
+        self.publisher_ = rospy.Publisher(topic_name, Range, queue_size=10);
 
 def main():
     rospy.init_node('dwm1001_driver_node')
@@ -48,8 +36,9 @@ def main():
     rospy.loginfo('Starting the dwm1001 driver node')
     main_class = MainClass()
     main_class.read_parameters()
-    ser = serial.Serial(main_class.serial_port_, 115200, timeout=1)
-    rate = rospy.Rate(200) # 1000Hz
+    ser = serial.Serial(main_class.serial_port_, main_class.baud_rate_, timeout=1)
+    rate = rospy.Rate(400)
+
 
     range_msg = Range()
     range_msg.min_range = 0.0
@@ -62,15 +51,11 @@ def main():
         except ValueError as e:
           continue
         range_msg.header.stamp = rospy.get_rostime()
-        if 'nrng' not in data : 
+        if 'raz' not in data : 
+          print("no data");
           continue
-        if 'rng' not in data['nrng'] :
-          continue
-        if 'uid' not in data['nrng'] :
-          continue
-        for i in range(len(data['nrng']['uid'])) :
-          range_msg.range = float(data['nrng']['rng'][i])
-          main_class.publishers_[int(data['nrng']['uid'][i])].publish(range_msg)
+        range_msg.range = float(data['raz'][0])
+        main_class.publisher_.publish(range_msg)
         rate.sleep()
 
 if __name__ == '__main__':
