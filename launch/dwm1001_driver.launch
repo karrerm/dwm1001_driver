@@ -1,14 +1,11 @@
 <launch>
   <group ns="pegasus" >   
     <node name="dwm1001_driver" pkg="dwm1001_driver" type="dwm1001_driver.py" output="screen">
-      <param name="serial_port" value="/dev/serial/by-id/usb-SEGGER_J-Link_000760103546-if00"/>                             
+      <param name="serial_port" value="/dev/serial/by-id/usb-SEGGER_J-Link_000760102997-if00"/>                             
       <param name="baud_rate" value="460800"/>
       <param name="topic_name" value="uwb_distance"/>
-      <param name="this_id" value="0"/>
-      <rosparam param="scale_factor"> [1.0] </rosparam>
-      <rosparam param="offset"> [0.0] </rosparam>
-      <rosparam param="uids"> [923]</rosparam>
-      <rosparam param="uids_mapping"> [1]</rosparam>
-    </node>
+      <param name="scale_factor" value="1.0"/>
+      <param name="offset" value="0.0"/>
+  </node>
   </group>
 </launch>

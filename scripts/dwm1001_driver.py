@@ -37,7 +37,7 @@ def main():
     main_class = MainClass()
     main_class.read_parameters()
     ser = serial.Serial(main_class.serial_port_, main_class.baud_rate_, timeout=1)
-    rate = rospy.Rate(200) # 1000Hz
+    rate = rospy.Rate(400)
 
 
     range_msg = Range()
